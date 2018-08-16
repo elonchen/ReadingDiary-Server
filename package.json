@@ -1,0 +1,16 @@
+{
+  "name": "ReadingDiary-Server",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "NODE_ENV=development node app.js",
+    "prod": "NODE_ENV=production node app.js"
+  },
+  "dependencies": {
+    "body-parser": "~1.16.0",
+    "cookie-parser": "~1.4.3",
+    "ejs": "~2.5.5",
+    "express": "~4.14.1",
+    "serve-favicon": "~2.3.2"
+  }
+}
