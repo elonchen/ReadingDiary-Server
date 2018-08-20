@@ -1,1 +1,1 @@
-# Wechat-Server
+# ReadingDiary-Server
