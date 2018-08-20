@@ -11,7 +11,9 @@ require('./routes')(app);
 //error catch
 require('./system/catch')(app);
 
-//start server
+//mongodb
+require('./public/serverutils/mongodb').init()
+
 //start server
 var port = process.env.PORT || config.port;
 app.listen(port, function () {

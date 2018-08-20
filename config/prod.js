@@ -4,9 +4,9 @@ module.exports = {
     isProd: true,
     mongodb: {
         port: 27017,
-        host: '112.124.97.221',
-        user: 'qq30135878',
-        password: 'Dsh12345',
-        db: 'zhuazhuakan_prod',
+        host: 'localhost',
+        user: 'dr_auther',
+        password: 'fp123456',
+        database: 'readingdiary',
     },
 };
