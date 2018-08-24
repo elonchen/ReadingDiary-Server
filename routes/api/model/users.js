@@ -1,3 +1,4 @@
+let comm = require('../../../public/serverutils/common')
 let mongoose = require('mongoose');
 let schema = mongoose.Schema({
     phone: {type: String},
@@ -8,23 +9,29 @@ let schema = mongoose.Schema({
     updateTime: {type: Date, default: Date.now()},
 });
 
-let model = mongoose.model('user', schema, 'user');
+let model = mongoose.model('users', schema, 'users');
 
 module.exports = {
     model: model,
     async createOrUpdate(phone, pass) {
-        let count = await  model.countDocuments({phone: phone, pass: pass});
-        let res = {};
+        let count = await  model.countDocuments({phone: phone});
+        let mRes = comm.result();
         if (count > 0) {
-            res = await model.findOne({phone: phone, pass: pass});
+            var userInfo = await model.findOne({phone: phone, pass: pass});
+            if (userInfo) {
+                mRes.data = userInfo;
+            } else {
+                mRes.error = 1;
+                mRes.msg = "手机号或密码错误";
+            }
         } else {
-            res = await model.create({phone: phone, pass: pass});
+            mRes.data = await model.create({phone: phone, pass: pass});
         }
-        return res;
+        return mRes;
     },
     async find(userId) {
         let res = await model.findOne({_id: userId}, {pass: false});//{条件},{要查询的字段}
-        return res;
+        return res || {};
     },
     async updateInfo(userId, pass, nickname, sign, avatar) {
         var updateRow = {};

@@ -20,8 +20,8 @@ exports.HTTP_GET = function (url, pamas) {
         }, function (error, response, body) {
             body = JSON.parse(body)
             if (error || body.code) {
-                aRes.error = body.code | 1;
-                aRes.msg = body.msg | "服务器通讯异常";
+                aRes.error = body.code || 1;
+                aRes.msg = body.msg || "服务器通讯异常";
             } else {
                 aRes.data = body
             }

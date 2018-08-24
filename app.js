@@ -14,6 +14,9 @@ require('./system/catch')(app);
 //mongodb
 require('./public/serverutils/mongodb').init()
 
+//task
+require('./task/task').execute()
+
 //start server
 var port = process.env.PORT || config.port;
 app.listen(port, function () {

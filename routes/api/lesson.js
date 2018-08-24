@@ -5,13 +5,10 @@ let base = config.RK_BASEURL + "/" + config.API_VISION;
 
 //model
 let lesson = require('./model/lesson');
-let like = require('./model/like');
+let favor = require('./model/favor');
 
-//课程列表
-exports.lessonList = async function (req, res, next) {
-    let from = req.query.from;//开始时间20180101
-    let to = req.query.to;//结束时间
-    let updated_at = req.query.updated_at;//结束时间
+//获取列表
+exports.rikeList = async function (from, to, updated_at) {
     if (!from) {
         from = "20180101";
     }
@@ -23,6 +20,13 @@ exports.lessonList = async function (req, res, next) {
     }
     var url = base + "/lessons?from=" + from + "&to=" + to + "&updated_at=" + updated_at;
     var mRes = await Server.HTTP_GET(url);
+    return mRes;
+}
+
+//课程列表
+exports.lessonList = async function (req, res, next) {
+    var mRes = comm.result();
+    mRes.data = await lesson.findList();
     return res.send(mRes)
 }
 
@@ -35,7 +39,7 @@ exports.activityStats = async function (req, res, next) {
         mRes.msg = "文章日期错误";
         return res.send(mRes)
     }
-    var dbData = await lesson.find(date_by_day);
+    var dbData = await lesson.findFavCount(date_by_day);
     var url = base + "/lessons/" + date_by_day + "/activity_stats";
     mRes = await Server.HTTP_GET(url);
     if (dbData) {
@@ -46,7 +50,7 @@ exports.activityStats = async function (req, res, next) {
 }
 
 //点赞删除点赞
-exports.likePOST = async function (req, res, next) {
+exports.favorPOST = async function (req, res, next) {
     var mRes = comm.result();
     let lessonId = req.body.lessonId;//文章id
     let date_by_day = req.body.date_by_day;
@@ -67,13 +71,13 @@ exports.likePOST = async function (req, res, next) {
         mRes.msg = "请登陆！";
         return res.send(mRes)
     }
-    await like.createOrUpdate(lessonId, userId, status);
-    await lesson.createOrUpdate(lessonId, date_by_day, status);
+    await lesson.updateFavCount(date_by_day, status);
+    mRes.data = await favor.createOrUpdate(lessonId, userId, status);
     return res.send(mRes)
 }
 
 //获取点赞状态
-exports.likeGET = async function (req, res, next) {
+exports.favorGET = async function (req, res, next) {
     var mRes = comm.result();
     let lessonId = req.query.lessonId;//文章id
     let userId = req.query.userId;
@@ -87,6 +91,24 @@ exports.likeGET = async function (req, res, next) {
         mRes.msg = "请登陆！";
         return res.send(mRes)
     }
-    mRes.data = await like.find(lessonId, userId);
+    mRes.data = await favor.findFavStatus(lessonId, userId);
+    return res.send(mRes)
+}
+
+//我的喜欢列表
+exports.favorList = async function (req, res, next) {
+    var mRes = comm.result();
+    let userId = req.query.userId;
+    if (!userId) {
+        mRes.error = 1;
+        mRes.msg = "请登陆！";
+        return res.send(mRes)
+    }
+    var favList = await favor.findFavList(userId);
+    var favTransList = [];
+    favList.forEach(function (item) {
+        favTransList.push(item.lessonId);
+    })
+    mRes.data = await lesson.findListByids(favTransList);
     return res.send(mRes)
 }

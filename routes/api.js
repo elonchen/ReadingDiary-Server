@@ -8,10 +8,11 @@ var apiPrefix = '/api/' + config.API_VISION;
 module.exports = function (app) {
     //lesson
     let lesson = require('./api/lesson');
-    app.get(apiPrefix + '/lessons', lesson.lessonList);
+    app.get(apiPrefix + '/lessons', lesson.rikeList);
     app.get(apiPrefix + '/lessons/activity_stats', lesson.activityStats);
-    app.post(apiPrefix + '/lessons/like', lesson.likePOST);
-    app.get(apiPrefix + '/lessons/like', lesson.likeGET);
+    app.post(apiPrefix + '/lessons/favor', lesson.favorPOST);
+    app.get(apiPrefix + '/lessons/favor', lesson.favorGET);
+    app.get(apiPrefix + '/lessons/favor_list', lesson.favorList);
 
 
     //user

@@ -1,7 +1,7 @@
 let comm = require('../../public/serverutils/common')
 
 //model
-let user = require('./model/user');
+let user = require('./model/users');
 
 exports.login0regist = async function (req, res, next) {
     let phone = req.body.phone;
@@ -12,7 +12,7 @@ exports.login0regist = async function (req, res, next) {
         mRes.msg = "请输入手机号和密码";
         return res.send(mRes)
     }
-    mRes.data = await user.createOrUpdate(phone, pass);
+    mRes = await user.createOrUpdate(phone, pass);
     return res.send(mRes)
 }
 

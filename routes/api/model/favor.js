@@ -2,11 +2,12 @@ let mongoose = require('mongoose');
 let schema = mongoose.Schema({
     id: {type: String},
     userId: {type: String},
+    lessonId: {type: String},
     status: {type: Number, default: 0},
     updateTime: {type: Date, default: Date.now()},
 });
 
-let model = mongoose.model('like', schema, 'like');
+let model = mongoose.model('favor', schema, 'favor');
 
 module.exports = {
     model: model,
@@ -17,9 +18,14 @@ module.exports = {
         } else {
             await model.create({lessonId: lessonId, userId: userId, status: status});
         }
+        return this.findFavStatus(lessonId, userId);
     },
-    async find(lessonId, userId) {
-        let res = await model.findOne({lessonId: lessonId, userId: userId}, {lessonId: true, status: true});//{条件},{要查询的字段}
-        return res;
+    async findFavStatus(lessonId, userId) {
+        let res = await model.findOne({lessonId: lessonId, userId: userId}, {_id: false, lessonId: true, status: true});//{条件},{要查询的字段}
+        return res || {};
+    },
+    async findFavList(userId) {
+        let res = await model.find({userId: userId}, {_id: false, lessonId: true});//{条件},{要查询的字段}
+        return res || [];
     }
 }

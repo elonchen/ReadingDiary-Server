@@ -1,35 +1,52 @@
 let mongoose = require('mongoose');
 let schema = mongoose.Schema({
-    lessonId: {type: String},
-    date_by_day: {type: String},
+    id: {type: String},
+    article: {type: String},
+    title: {type: String},
+    provenance: {type: String},
+    date_by_day: {type: Number},
+    author: {type: Object},
     comment_count: {type: Number, default: 0},
     favourite_count: {type: Number, default: 0},
-    updateTime: {type: Date, default: Date.now()},
+    updated_at: {type: Number},
+    created_at: {type: Number}
 });
 
 let model = mongoose.model('lesson', schema, 'lesson');
 
 module.exports = {
     model: model,
-    async createOrUpdate(lessonId, date_by_day, status) {
-        let data = await model.find({date_by_day: date_by_day});
-        if (data.length > 0) {
-            if (status == 1) {
-                //{条件},{要更新的内容}
-                await model.update({date_by_day: date_by_day}, {
-                    favourite_count: data[0].favourite_count + 1, updateTime: Date.now()
-                });
-            } else {
-                await model.update({date_by_day: date_by_day}, {
-                    favourite_count: data[0].favourite_count + 1, updateTime: Date.now()
-                });
+    async saveList(list) {
+        return await model.create(list)
+    },
+    async checkAndSaveList(list) {
+        list.forEach(async function (item) {
+            let count = await model.countDocuments({date_by_day: item.date_by_day});
+            if (count == 0) {
+                await model.create(item);
             }
+        });
+    },
+    async findFavCount(date_by_day) {
+        let res = await model.findOne({date_by_day: date_by_day}, {
+            comment_count: true, favourite_count: true
+        });
+        return res;
+    },
+    async updateFavCount(date_by_day, status) {
+        if (status == 1) {
+            //{条件},{要更新的内容}
+            await model.update({date_by_day: date_by_day}, {$inc: {favourite_count: +1}});
         } else {
-            await model.create({lessonId: lessonId, date_by_day: date_by_day, favourite_count: 1});
+            await model.update({date_by_day: date_by_day}, {$inc: {favourite_count: -1}});
         }
     },
-    async find(date_by_day) {
-        let res = await model.findOne({date_by_day: date_by_day}, {comment_count: true, favourite_count: true});
+    async findList() {
+        let res = await model.find({}, {_id: false, __v: false});
         return res;
-    }
+    },
+    async findListByids(ids) {
+        let res = await model.find({id: {$in: ids}}, {_id: false, __v: false});
+        return res;
+    },
 }
