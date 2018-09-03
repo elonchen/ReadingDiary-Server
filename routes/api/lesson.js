@@ -4,8 +4,8 @@ let comm = require('../../public/serverutils/common')
 let base = config.RK_BASEURL + "/" + config.API_VISION;
 
 //model
-let lesson = require('./model/lesson');
-let favor = require('./model/favor');
+let lessonModel = require('./model/lesson');
+let favorModel = require('./model/favor');
 
 //获取列表
 exports.rikeList = async function (from, to, updated_at) {
@@ -26,7 +26,7 @@ exports.rikeList = async function (from, to, updated_at) {
 //课程列表
 exports.lessonList = async function (req, res, next) {
     var mRes = comm.result();
-    mRes.data = await lesson.findList();
+    mRes.data = await lessonModel.findList();
     return res.send(mRes)
 }
 
@@ -39,7 +39,7 @@ exports.activityStats = async function (req, res, next) {
         mRes.msg = "文章日期错误";
         return res.send(mRes)
     }
-    var dbData = await lesson.findFavCount(date_by_day);
+    var dbData = await lessonModel.findFavCount(date_by_day);
     var url = base + "/lessons/" + date_by_day + "/activity_stats";
     mRes = await Server.HTTP_GET(url);
     if (dbData) {
@@ -71,8 +71,8 @@ exports.favorPOST = async function (req, res, next) {
         mRes.msg = "请登陆！";
         return res.send(mRes)
     }
-    await lesson.updateFavCount(date_by_day, status);
-    mRes.data = await favor.createOrUpdate(lessonId, userId, status);
+    await lessonModel.updateFavCount(date_by_day, status);
+    mRes.data = await favorModel.createOrUpdate(lessonId, userId, status);
     return res.send(mRes)
 }
 
@@ -91,7 +91,7 @@ exports.favorGET = async function (req, res, next) {
         mRes.msg = "请登陆！";
         return res.send(mRes)
     }
-    mRes.data = await favor.findFavStatus(lessonId, userId);
+    mRes.data = await favorModel.findFavStatus(lessonId, userId);
     return res.send(mRes)
 }
 
@@ -104,11 +104,11 @@ exports.favorList = async function (req, res, next) {
         mRes.msg = "请登陆！";
         return res.send(mRes)
     }
-    var favList = await favor.findFavList(userId);
+    var favList = await favorModel.findFavList(userId);
     var favTransList = [];
     favList.forEach(function (item) {
         favTransList.push(item.lessonId);
     })
-    mRes.data = await lesson.findListByids(favTransList);
+    mRes.data = await lessonModel.findListByids(favTransList);
     return res.send(mRes)
 }

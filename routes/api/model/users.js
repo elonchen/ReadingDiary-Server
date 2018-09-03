@@ -8,6 +8,14 @@ let schema = mongoose.Schema({
     avatar: {type: String},
     updateTime: {type: Date, default: Date.now()},
 });
+schema.options.toObject = {
+    //把_id转换成id
+    transform(doc, ret, options) {
+        ret.id = doc.id;
+        delete ret._id;
+        return ret;
+    }
+};
 
 let model = mongoose.model('users', schema, 'users');
 

@@ -20,4 +20,10 @@ module.exports = function (app) {
     app.post(apiPrefix + '/user', user.login0regist);
     app.get(apiPrefix + '/user/info', user.userInfo);
     app.post(apiPrefix + '/user/update', user.update);
+
+
+    //comment
+    let comment = require('./api/comment');
+    app.get(apiPrefix + '/comment/test', comment.testGetList);
+    app.get(apiPrefix + '/comments', comment.forGetList);
 };
