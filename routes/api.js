@@ -8,7 +8,7 @@ var apiPrefix = '/api/' + config.API_VISION;
 module.exports = function (app) {
     //lesson
     let lesson = require('./api/lesson');
-    app.get(apiPrefix + '/lessons', lesson.rikeList);
+    app.get(apiPrefix + '/lessons', lesson.lessonList);
     app.get(apiPrefix + '/lessons/activity_stats', lesson.activityStats);
     app.post(apiPrefix + '/lessons/favor', lesson.favorPOST);
     app.get(apiPrefix + '/lessons/favor', lesson.favorGET);
@@ -24,6 +24,9 @@ module.exports = function (app) {
 
     //comment
     let comment = require('./api/comment');
-    app.get(apiPrefix + '/comment/test', comment.testGetList);
-    app.get(apiPrefix + '/comments', comment.forGetList);
+    app.get(apiPrefix + '/comments', comment.commontList);
+    app.post(apiPrefix + '/comment', comment.commontPOST);
+    app.get(apiPrefix + '/sub_comments', comment.subCommontList);
+    app.post(apiPrefix + '/sub_comment', comment.subCommontPOST);
+    app.post(apiPrefix + '/comment_like', comment.commontLikePOST);
 };

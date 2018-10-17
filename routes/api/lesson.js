@@ -30,7 +30,7 @@ exports.lessonList = async function (req, res, next) {
     return res.send(mRes)
 }
 
-//点赞、收藏数
+//点赞、评论数
 exports.activityStats = async function (req, res, next) {
     var mRes = comm.result();
     let date_by_day = req.query.date_by_day;//文章日期
@@ -55,7 +55,8 @@ exports.favorPOST = async function (req, res, next) {
     let lessonId = req.body.lessonId;//文章id
     let date_by_day = req.body.date_by_day;
     let userId = req.body.userId;
-    let status = req.body.status;
+    var status = req.body.status;
+    status = (status === "true");
     if (!lessonId) {
         mRes.error = 1;
         mRes.msg = "文章id错误";

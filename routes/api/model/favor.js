@@ -3,7 +3,7 @@ let schema = mongoose.Schema({
     id: {type: String},
     userId: {type: String},
     lessonId: {type: String},
-    status: {type: Number, default: 0},
+    status: {type: Boolean, default: false},
     updateTime: {type: Date, default: Date.now()},
 });
 
@@ -22,7 +22,7 @@ module.exports = {
     },
     async findFavStatus(lessonId, userId) {
         let res = await model.findOne({lessonId: lessonId, userId: userId}, {_id: false, lessonId: true, status: true});//{条件},{要查询的字段}
-        return res || {};
+        return res || {"lessonId": lessonId, "status": false};
     },
     async findFavList(userId) {
         let res = await model.find({userId: userId}, {_id: false, lessonId: true});//{条件},{要查询的字段}

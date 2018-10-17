@@ -33,8 +33,11 @@ module.exports = {
         });
         return res;
     },
+    async updateCommentCount(id) {
+        await model.update({id: id}, {$inc: {comment_count: +1}});
+    },
     async updateFavCount(date_by_day, status) {
-        if (status == 1) {
+        if (status) {
             //{条件},{要更新的内容}
             await model.update({date_by_day: date_by_day}, {$inc: {favourite_count: +1}});
         } else {
@@ -42,7 +45,7 @@ module.exports = {
         }
     },
     async findList() {
-        let res = await model.find({}, {_id: false, __v: false});
+        let res = await model.find({}, {_id: false, __v: false}).sort({updated_at: 1});
         return res;
     },
     async findListByids(ids) {
